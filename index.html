@@ -496,7 +496,10 @@
                 <button class="btn btn-primary" id="check-btn" onclick="checkAnswer()">
                     Проверить ответ
                 </button>
-                <button class="btn btn-secondary hidden" id="next-btn" onclick="nextQuestion()">
+                <button class="btn btn-secondary hidden" id="retry-btn" onclick="retryAnswer()">
+                    🔄 Попробовать снова
+                </button>
+                <button class="btn btn-primary hidden" id="next-btn" onclick="nextQuestion()">
                     Далее →
                 </button>
             </div>
@@ -531,33 +534,136 @@
 
     <script>
         // ============================================
-        // ДАННЫЕ: ВОПРОСЫ И ОТВЕТЫ
+        // ДАННЫЕ: ВОПРОСЫ И ОТВЕТЫ (25 задач)
         // ============================================
-        const questions = [
+        const allQuestions = [
+            // МАТЕМАТИКА
             {
                 question: "У Марины было 8 яблок. Она отдала половину своей подруге. Сколько яблок осталось у Марины?",
                 correctAnswers: ["4", "четыре"],
-                hint: "Подумай, что значит 'половина'"
+                category: "math"
             },
             {
-                question: "Если позавчера было воскресенье, какой день будет послезавтра?",
-                correctAnswers: ["четверг", "чт"],
-                hint: "Сегодня — вторник"
+                question: "Если купить 3 ручки по 15 рублей, сколько нужно заплатить?",
+                correctAnswers: ["45", "сорок пять"],
+                category: "math"
             },
             {
-                question: "У фермера 17 овец. Все, кроме 9, разбежались. Сколько овец осталось?",
-                correctAnswers: ["9", "девять"],
-                hint: "Внимательно прочитай: 'все, кроме 9'"
+                question: "В автобусе ехало 12 человек. На остановке вышло 5 и зашло 8. Сколько людей в автобусе?",
+                correctAnswers: ["15", "пятнадцать"],
+                category: "math"
             },
             {
                 question: "Что больше: половина от 100 или четверть от 200?",
                 correctAnswers: ["равны", "одинаково", "поровну", "50"],
-                hint: "Посчитай оба варианта"
+                category: "math"
+            },
+            {
+                question: "У Саши 24 конфеты. Он разделил их поровну между собой и 3 друзьями. Сколько конфет получил каждый?",
+                correctAnswers: ["6", "шесть"],
+                category: "math"
+            },
+            
+            // ЛОГИКА И ВНИМАТЕЛЬНОСТЬ
+            {
+                question: "Если позавчера было воскресенье, какой день будет послезавтра?",
+                correctAnswers: ["четверг", "чт"],
+                category: "logic"
+            },
+            {
+                question: "У фермера 17 овец. Все, кроме 9, разбежались. Сколько овец осталось?",
+                correctAnswers: ["9", "девять"],
+                category: "logic"
             },
             {
                 question: "В комнате 4 угла. В каждом углу сидит кошка. Напротив каждой кошки — 3 кошки. Сколько всего кошек в комнате?",
                 correctAnswers: ["4", "четыре"],
-                hint: "Представь комнату сверху"
+                category: "logic"
+            },
+            {
+                question: "Врач прописал принимать таблетку каждые полчаса. Сколько времени пройдёт, пока ты примешь 3 таблетки?",
+                correctAnswers: ["1 час", "час", "60 минут", "60"],
+                category: "logic"
+            },
+            {
+                question: "Сколько месяцев в году имеют 28 дней?",
+                correctAnswers: ["12", "все", "двенадцать"],
+                category: "logic"
+            },
+            {
+                question: "Что тяжелее: килограмм ваты или килограмм железа?",
+                correctAnswers: ["одинаково", "равны", "поровну"],
+                category: "logic"
+            },
+            {
+                question: "Если в 12 часов ночи идёт дождь, можно ли ожидать, что через 72 часа будет солнечная погода?",
+                correctAnswers: ["нет"],
+                category: "logic"
+            },
+            
+            // ПОСЛЕДОВАТЕЛЬНОСТИ И ЗАКОНОМЕРНОСТИ
+            {
+                question: "Продолжи последовательность: 2, 4, 6, 8, ... Какое следующее число?",
+                correctAnswers: ["10", "десять"],
+                category: "sequence"
+            },
+            {
+                question: "Продолжи: Понедельник, Среда, Пятница, ...?",
+                correctAnswers: ["воскресенье", "вс"],
+                category: "sequence"
+            },
+            {
+                question: "Какое число пропущено: 5, 10, 15, __, 25?",
+                correctAnswers: ["20", "двадцать"],
+                category: "sequence"
+            },
+            {
+                question: "Продолжи последовательность: 1, 4, 9, 16, ... Какое следующее число?",
+                correctAnswers: ["25", "двадцать пять"],
+                category: "sequence"
+            },
+            
+            // ЗАГАДКИ
+            {
+                question: "Что можно увидеть с закрытыми глазами?",
+                correctAnswers: ["сон", "сны"],
+                category: "riddle"
+            },
+            {
+                question: "Что становится больше, когда его ставят вверх ногами?",
+                correctAnswers: ["6", "шесть", "число 6"],
+                category: "riddle"
+            },
+            
+            // ПРОСТРАНСТВЕННОЕ МЫШЛЕНИЕ
+            {
+                question: "У прямоугольника 4 угла. Если отрезать один угол, сколько углов останется?",
+                correctAnswers: ["5", "пять"],
+                category: "spatial"
+            },
+            {
+                question: "Ты едешь на автобусе. На первой остановке вошло 6 человек. На второй — вошло 3 и вышло 2. На третьей — вышло 4 и вошло 5. Как зовут водителя?",
+                correctAnswers: ["меня", "я", "мое имя", "моё имя"],
+                category: "spatial"
+            },
+            
+            // СЛОВЕСНЫЕ ЗАДАЧИ
+            {
+                question: "Какое слово всегда пишется неправильно?",
+                correctAnswers: ["неправильно"],
+                category: "word"
+            },
+            {
+                question: "Сколько раз встречается буква 'о' в слове 'молоко'?",
+                correctAnswers: ["3", "три"],
+                category: "word"
+            },
+            
+            // ЗАДАЧИ НА СМЕКАЛКУ
+            {
+                question: "У отца Мэри пять дочерей: Чача, Чече, Чичи, Чочо. Как зовут пятую дочь?",
+                correctAnswers: ["мэри", "мери", "mary"],
+                category: "clever"
             }
         ];
 
@@ -566,7 +672,26 @@
         // ============================================
         let currentQuestionIndex = 0;
         let score = 0;
-        let totalQuestions = questions.length;
+        let totalQuestions = 5; // Всегда 5 вопросов за игру
+        let questions = []; // Массив для выбранных вопросов
+        let currentAttempts = 0; // Счётчик попыток на текущий вопрос
+
+        // ============================================
+        // ФУНКЦИЯ: ВЫБОР СЛУЧАЙНЫХ ВОПРОСОВ
+        // ============================================
+        function getRandomQuestions(count) {
+            // Создаём копию массива всех вопросов
+            const shuffled = [...allQuestions];
+            
+            // Перемешиваем массив (алгоритм Фишера-Йетса)
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            
+            // Возвращаем первые count вопросов
+            return shuffled.slice(0, count);
+        }
 
         // ============================================
         // УПРАВЛЕНИЕ ЭКРАНАМИ
@@ -586,6 +711,11 @@
         function startGame() {
             currentQuestionIndex = 0;
             score = 0;
+            currentAttempts = 0;
+            
+            // Выбираем случайные 5 вопросов из 25
+            questions = getRandomQuestions(totalQuestions);
+            
             showScreen('game-screen');
             updateProgress();
             loadQuestion();
@@ -596,6 +726,7 @@
         // ============================================
         function loadQuestion() {
             const question = questions[currentQuestionIndex];
+            currentAttempts = 0; // Сбрасываем счётчик попыток
             
             // Обновить текст вопроса
             document.getElementById('question-text').textContent = question.question;
@@ -609,9 +740,10 @@
             feedback.classList.remove('show', 'correct', 'incorrect');
             feedback.textContent = '';
             
-            // Показать кнопку "Проверить", скрыть "Далее"
+            // Показать кнопку "Проверить", скрыть "Далее" и "Попробовать снова"
             document.getElementById('check-btn').classList.remove('hidden');
             document.getElementById('next-btn').classList.add('hidden');
+            document.getElementById('retry-btn').classList.add('hidden');
             
             // Фокус на поле ввода
             document.getElementById('answer-input').focus();
@@ -643,6 +775,8 @@
                 return;
             }
             
+            currentAttempts++;
+            
             // Проверить, правильный ли ответ
             const isCorrect = question.correctAnswers.some(answer => 
                 userAnswer === answer.toLowerCase()
@@ -653,16 +787,48 @@
                 feedback.textContent = '✅ Правильно! Ты молодец!';
                 feedback.classList.add('correct');
                 updateProgress(); // Обновить счёт
+                
+                // Скрыть кнопку "Проверить" и "Попробовать снова", показать "Далее"
+                document.getElementById('check-btn').classList.add('hidden');
+                document.getElementById('retry-btn').classList.add('hidden');
+                document.getElementById('next-btn').classList.remove('hidden');
             } else {
-                feedback.textContent = '❌ Попробуй ещё раз. Подумай внимательнее!';
+                // Неправильный ответ
+                if (currentAttempts === 1) {
+                    feedback.textContent = '❌ Не совсем так. Подумай ещё раз!';
+                } else {
+                    feedback.textContent = '❌ Попробуй ещё раз. Ты почти у цели!';
+                }
                 feedback.classList.add('incorrect');
+                
+                // Скрыть кнопку "Проверить", показать "Попробовать снова" и "Далее"
+                document.getElementById('check-btn').classList.add('hidden');
+                document.getElementById('retry-btn').classList.remove('hidden');
+                document.getElementById('next-btn').classList.remove('hidden');
             }
             
             feedback.classList.add('show');
+        }
+        
+        // ============================================
+        // ПОПРОБОВАТЬ СНОВА
+        // ============================================
+        function retryAnswer() {
+            // Очистить поле ввода
+            document.getElementById('answer-input').value = '';
             
-            // Скрыть кнопку "Проверить", показать "Далее"
-            document.getElementById('check-btn').classList.add('hidden');
-            document.getElementById('next-btn').classList.remove('hidden');
+            // Скрыть обратную связь
+            const feedback = document.getElementById('feedback');
+            feedback.classList.remove('show', 'correct', 'incorrect');
+            feedback.textContent = '';
+            
+            // Показать кнопку "Проверить", скрыть "Попробовать снова"
+            document.getElementById('check-btn').classList.remove('hidden');
+            document.getElementById('retry-btn').classList.add('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+            
+            // Фокус на поле ввода
+            document.getElementById('answer-input').focus();
         }
 
         // ============================================
@@ -722,10 +888,14 @@
         document.getElementById('answer-input').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 const checkBtn = document.getElementById('check-btn');
+                const retryBtn = document.getElementById('retry-btn');
                 const nextBtn = document.getElementById('next-btn');
                 
+                // Приоритет: Проверить -> Попробовать снова -> Далее
                 if (!checkBtn.classList.contains('hidden')) {
                     checkAnswer();
+                } else if (!retryBtn.classList.contains('hidden')) {
+                    retryAnswer();
                 } else if (!nextBtn.classList.contains('hidden')) {
                     nextQuestion();
                 }
